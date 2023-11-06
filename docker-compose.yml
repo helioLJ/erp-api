@@ -1,0 +1,13 @@
+version: '3.1'
+services:
+  postgres:
+    image: postgres:latest
+    container_name: dev-db
+    environment:
+      POSTGRES_DB: erp-db
+      POSTGRES_USER: my_user
+      POSTGRES_PASSWORD: my_password
+    ports:
+      - "5432:5432"
+    # volumes:
+    #   - /path/to/your/postgres/data:/var/lib/postgresql/data
