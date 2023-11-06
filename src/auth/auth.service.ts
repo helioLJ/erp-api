@@ -29,4 +29,14 @@ export class AuthService {
 
     return newUser;
   }
+
+  async findUser(id: number) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    return user;
+  }
 }
