@@ -8,8 +8,25 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class AuthService {
   constructor(private prisma: PrismaService) {}
 
-  validateUser(details: UserDetails) {
-    console.log('AuthService');
-    console.log(details);
+  async validateUser(details: UserDetails) {
+    // if (details.email is is not in allowed users)
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: details.email,
+      },
+    });
+
+    if (user) return user;
+
+    const newUser = await this.prisma.user.create({
+      data: {
+        displayName: details.displayName,
+        email: details.email,
+        profilePicture: details.profilePicture,
+      },
+    });
+
+    return newUser;
   }
 }
