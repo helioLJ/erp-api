@@ -11,8 +11,14 @@ datasource db {
 }
 
 model User {
-  id    Int     @default(autoincrement()) @id
-  email String  @unique
-  displayName  String
+  id             Int    @id @default(autoincrement())
+  email          String @unique
+  displayName    String
   profilePicture String
+}
+
+model AllowedEmails {
+  id    Int     @id @default(autoincrement())
+  name  String?
+  email String
 }
