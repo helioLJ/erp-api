@@ -1,31 +1,43 @@
 import { PrismaClient } from '@prisma/client';
-
-const fakeGmails = [
-  'user1@gmail.com',
-  'user2@gmail.com',
-  'user3@gmail.com',
-  'user4@gmail.com',
-  'user5@gmail.com',
-  'user6@gmail.com',
-  'user7@gmail.com',
-  'user8@gmail.com',
-  'user9@gmail.com',
-  'user10@gmail.com',
-];
+import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  fakeGmails.map(async (gmail, index) => {
-    const fake = await prisma.allowedEmails.create({
+  await prisma.allowedEmails.create({
+    data: {
+      role: 'Admin',
+      email: 'helio.lucio.jr54@gmail.com',
+      name: 'Hélio Lúcio',
+    },
+  });
+
+  for (let i = 0; i < 10; i++) {
+    const fakeEmail = faker.internet.email();
+    const fakeName = faker.person.fullName();
+
+    await prisma.allowedEmails.create({
       data: {
-        name: 'Fake User ' + index,
-        email: gmail,
+        role: 'Student',
+        email: fakeEmail,
+        name: fakeName,
       },
     });
 
-    console.log(fake);
-  });
+    const user = await prisma.user.create({
+      data: {
+        email: fakeEmail,
+        displayName: fakeName,
+        profilePicture: faker.image.avatarGitHub(),
+      },
+    });
+
+    await prisma.student.create({
+      data: {
+        userId: user.id,
+      },
+    });
+  }
 }
 main()
   .then(async () => {

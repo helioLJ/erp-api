@@ -24,12 +24,17 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    console.log(refreshToken); // refreshToken is still undefined
     const user = await this.authService.validateUser({
       email: profile.emails[0].value,
       displayName: profile.displayName,
       profilePicture: profile.photos[0].value,
     });
-    return user || null;
+    return (
+      {
+        ...user,
+        accessToken: accessToken,
+        refreshToken: refreshToken ?? null,
+      } || null
+    );
   }
 }

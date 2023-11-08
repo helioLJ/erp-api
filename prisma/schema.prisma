@@ -15,10 +15,97 @@ model User {
   email          String @unique
   displayName    String
   profilePicture String
+
+  Student Student?
+  Teacher Teacher?
 }
 
 model AllowedEmails {
   id    Int     @id @default(autoincrement())
   name  String?
+  role  String
   email String
+}
+
+model Teacher {
+  id Int @id @default(autoincrement())
+
+  cpf   String?
+  rg    String?
+  phone String?
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique
+}
+
+model Student {
+  id Int @id @default(autoincrement())
+
+  father         String?
+  mother         String?
+  address        String?
+  observations   String?
+  activityStatus String?
+
+  birthday         DateTime?
+  registration_day DateTime?
+
+  cpf                 Int?
+  rg                  Int?
+  phone               Int?
+  registration_number Int?
+
+  payments Payment[]
+  grades   Grade[]
+
+  classroomId Int?
+  Classroom   Classroom? @relation(fields: [classroomId], references: [id])
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique
+}
+
+model Classroom {
+  id Int @id @default(autoincrement())
+
+  name   String
+  period String
+
+  end_day   DateTime
+  start_day DateTime
+
+  students Student[]
+}
+
+model Subject {
+  id Int @id @default(autoincrement())
+
+  name String
+
+  grades Grade[]
+}
+
+model Grade {
+  id Int @id @default(autoincrement())
+
+  grade     Float
+  frequency Int
+
+  subjectId Int
+  Subject   Subject @relation(fields: [subjectId], references: [id])
+
+  studentId Int
+  Student   Student @relation(fields: [studentId], references: [id])
+}
+
+model Payment {
+  id Int @id @default(autoincrement())
+
+  due_date    DateTime
+  payday      DateTime?
+  value       Float
+  observation String?
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id])
 }

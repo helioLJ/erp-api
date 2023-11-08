@@ -26,7 +26,7 @@ export class AuthService {
       },
     });
 
-    if (user) return user;
+    if (user) return { ...user, role: allowedEmail.role };
 
     const newUser = await this.prisma.user.create({
       data: {
@@ -36,7 +36,13 @@ export class AuthService {
       },
     });
 
-    return newUser;
+    if (allowedEmail.role === 'Student')
+      await this.prisma.student.create({ data: { userId: newUser.id } });
+
+    // if (allowedEmail.role === 'Teacher')
+    // await this.studentService.create(newUser.id);
+
+    return { ...newUser, role: allowedEmail.role };
   }
 
   async findUser(id: number) {
